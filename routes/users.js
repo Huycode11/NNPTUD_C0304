@@ -9,7 +9,9 @@ email:"vana@gmail.com",
 fullName:"Nguyễn Văn A",
 status:true,
 loginCount:15,
-role:{id:"r1",name:"Quản trị viên"}
+role:{id:"r1",name:"Quản trị viên"},
+creationAt:"2026-03-04T08:10:00.000Z",
+updatedAt:"2026-03-04T08:10:00.000Z"
 },
 {
 username:"tranthib",
@@ -18,7 +20,9 @@ email:"thib@gmail.com",
 fullName:"Trần Thị B",
 status:true,
 loginCount:7,
-role:{id:"r2",name:"Biên tập viên"}
+role:{id:"r2",name:"Biên tập viên"},
+creationAt:"2026-03-04T08:11:00.000Z",
+updatedAt:"2026-03-04T08:11:00.000Z"
 },
 {
 username:"levanc",
@@ -27,7 +31,9 @@ email:"vanc@gmail.com",
 fullName:"Lê Văn C",
 status:true,
 loginCount:3,
-role:{id:"r3",name:"Người dùng"}
+role:{id:"r3",name:"Người dùng"},
+creationAt:"2026-03-04T08:12:00.000Z",
+updatedAt:"2026-03-04T08:12:00.000Z"
 }
 ];
 
@@ -40,11 +46,16 @@ res.json(dataUser)
 
 });
 
+
 /* GET user by username */
 
 router.get('/:username', function(req, res) {
 
 const user = dataUser.find(u=>u.username===req.params.username)
+
+if(!user){
+return res.status(404).json({message:"User not found"})
+}
 
 res.json(user)
 
@@ -55,7 +66,11 @@ res.json(user)
 
 router.post('/', function(req, res) {
 
-const newUser=req.body
+const newUser = {
+...req.body,
+creationAt:new Date(),
+updatedAt:new Date()
+}
 
 dataUser.push(newUser)
 
@@ -70,7 +85,15 @@ router.put('/:username', function(req, res) {
 
 const index=dataUser.findIndex(u=>u.username===req.params.username)
 
-dataUser[index]=req.body
+if(index===-1){
+return res.status(404).json({message:"User not found"})
+}
+
+dataUser[index]={
+...req.body,
+creationAt:dataUser[index].creationAt,
+updatedAt:new Date()
+}
 
 res.json(dataUser[index])
 
@@ -97,5 +120,6 @@ const users=dataUser.filter(u=>u.role.id===req.params.id)
 res.json(users)
 
 })
+
 
 module.exports = router;

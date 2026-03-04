@@ -7,17 +7,23 @@ let dataRole = [
   {
     id: "r1",
     name: "Quản trị viên",
-    description: "Toàn quyền quản lý hệ thống"
+    description: "Toàn quyền quản lý hệ thống",
+    creationAt: "2026-03-04T08:00:00.000Z",
+    updatedAt: "2026-03-04T08:00:00.000Z"
   },
   {
     id: "r2",
     name: "Biên tập viên",
-    description: "Quản lý nội dung và dữ liệu"
+    description: "Quản lý nội dung và dữ liệu",
+    creationAt: "2026-03-04T08:00:00.000Z",
+    updatedAt: "2026-03-04T08:00:00.000Z"
   },
   {
     id: "r3",
     name: "Người dùng",
-    description: "Tài khoản người dùng thông thường"
+    description: "Tài khoản người dùng thông thường",
+    creationAt: "2026-03-04T08:00:00.000Z",
+    updatedAt: "2026-03-04T08:00:00.000Z"
   }
 ];
 
@@ -65,7 +71,11 @@ router.get('/:id', function(req, res) {
 
 router.post('/', function(req, res) {
 
-  const newRole = req.body;
+  const newRole = {
+    ...req.body,
+    creationAt: new Date(),
+    updatedAt: new Date()
+  };
 
   dataRole.push(newRole);
 
@@ -80,7 +90,15 @@ router.put('/:id', function(req, res) {
 
   const index = dataRole.findIndex(r => r.id === req.params.id);
 
-  dataRole[index] = req.body;
+  if(index === -1){
+    return res.status(404).json({message:"Role not found"});
+  }
+
+  dataRole[index] = {
+    ...req.body,
+    creationAt: dataRole[index].creationAt,
+    updatedAt: new Date()
+  };
 
   res.json(dataRole[index]);
 
